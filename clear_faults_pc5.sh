@@ -23,11 +23,11 @@ xdotool mousemove_relative --sync 1340 170 click 1; sleep 7
 for i in `seq 1 2`; do 
 	color=`grabc & xdotool mousemove_relative --sync -- ${BOX[$i]} click 1`
 	if [ "$color" = "#00ff00" ] ; then
-		sleep $delay
+		sleep 0
 	else
 		echo "	FAILED ###PC5### FAILED" >&3; exit
 	fi
 	sleep $delay
 done   
 
-echo "		PC #3: PASS" >&3
+echo "		PC #5: PASS" >&3
