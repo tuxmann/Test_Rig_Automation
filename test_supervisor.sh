@@ -16,10 +16,11 @@ echo $'\n' "	Test Supervisor Script started" $'\n'
 
 enter_data
 
+
 ###############################################################################
-###################          START SIM SCRIPTS             ####################
+###################         "START SIM SCRIPTS"            ####################
 ###############################################################################
-echo $'\n' "	Running Start Sim Scripts"
+echo $'\n' "	Entering Data & Starting Simulation"
 
 #PC2
 /home/usrA664/Downloads/start_sim_pc2.sh $filename $mode &
@@ -29,16 +30,16 @@ ssh usrIMB@192.168.1.203 "sleep 0.2; export DISPLAY=:0.0; Downloads/start_sim_pc
 ssh usrADB@192.168.1.204 "sleep 0.2; export DISPLAY=:0.0; Downloads/start_sim_pc4.sh $filename $mode" &
 #PC5
 ssh usrA429@192.168.1.205 "sleep 0.2; export DISPLAY=:0.0; Downloads/start_sim_pc5.sh $filename $mode" &
-
 sleep 10; xdotool key alt+Tab
-read -p "Press ENTER to continue"
+
 
 ###############################################################################
-###################          CLEAR START SCRIPTS           ####################
+#############       "CLEAR FAULTS & START TEST" SCRIPTS        ################
 ###############################################################################
-
+clear_faults(){		# Clear Faults fucntion
+read -p $'\n' "Press ENTER to Clear Faults"
 # CLEAR FAULTS
-echo $'\n' "	Running Clear Faults Scripts"
+echo $'\n' "	Clearing Faults & Checking status boxes... Please wait."
 #PC2
 /home/usrA664/Downloads/clear_faults_pc2.sh &
 #PC3
@@ -47,11 +48,16 @@ ssh usrIMB@192.168.1.203 "sleep 0.2; export DISPLAY=:0.0; Downloads/clear_faults
 ssh usrADB@192.168.1.204 "sleep 0.2; export DISPLAY=:0.0; Downloads/clear_faults_pc4.sh" &
 #PC5
 ssh usrA429@192.168.1.205 "sleep 0.2; export DISPLAY=:0.0; Downloads/clear_faults_pc5.sh" &
-
-### ARE THE FAULTS CLEARED?
 sleep 16; xdotool key alt+Tab
+}
+
+clear_faults	# Run clear_faults function
+### Did the PCs pass?
 until [ "$ans" == "Y" ] || [ "$ans" == "y" ]; do
-	read -p "Are the faults clear? (Press Ctrl+C to quit) " ans
+	read -p $'\n' "Did all PCs report PASS? (Press Ctrl+C to quit) " ans
+	if [ "$ans" == "N" ] || [ "$ans" == "n" ]; then
+		clear_faults
+	fi
 done	
 
 # START TEST
@@ -67,22 +73,22 @@ ssh usrADB@192.168.1.204 "sleep 0.2; export DISPLAY=:0.0; xdotool mousemove_rela
 #PC5
 ssh usrA429@192.168.1.205 "sleep 0.2; export DISPLAY=:0.0; LD_LIBRARY_PATH=/usr/local/lib; export LD_LIBRARY_PATH; xdotool mousemove_relative --sync 330 -270 click 1" &
 sleep 5; xdotool key alt+Tab
-read -p "Press ENTER to continue"
 
 ###############################################################################
 ###################        FINISH AND REPORT SCRIPTS       ####################
 ###############################################################################
 
-echo $'\n' "	Running Finish Scripts"
+read -p "Press ENTER to Stop Testing & Start Post Processing"
+echo $'\n' "	Stopping Testing & Starting Post Processing... Please wait."
 #PC2
-xdotool mousemove_relative --sync 0 50 click 1 &
+/home/usrA664/Downloads/finish_and_report_pc2.sh &
 #PC3
 ssh usrIMB@192.168.1.203 "sleep 0.2; export DISPLAY=:0.0; Downloads/finish_and_report_pc3.sh" &
 #PC4
 ssh usrADB@192.168.1.204 "sleep 0.2; export DISPLAY=:0.0; Downloads/finish_and_report_pc4.sh" &
 #PC5
-ssh usrA429@192.168.1.205 "sleep 0.2; export DISPLAY=:0.0; Downloads/finish_and_report_pc5.sh"
+ssh usrA429@192.168.1.205 "sleep 0.2; export DISPLAY=:0.0; Downloads/finish_and_report_pc5.sh" &
 
-echo $'\n' "	Test Supervisor Script finished" $'\n'
+echo $'\n' "	Test Supervisor Script complete." $'\n'
 
 
