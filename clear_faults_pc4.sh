@@ -17,7 +17,7 @@ xdotool mousemove_relative --sync 950 470 click 1; sleep 7
 color=`grabc & xdotool mousemove_relative --sync -- -300 -420 click 1`
 
 if [ "$color" = "#00ff00" ] ; then
-	echo "		PC #4: PASS" >&3; sleep $delay
+	echo "		PC #4: PASS" >&3
 else
-	echo "	FAILED ###PC4### FAILED " >&3; exit
+	echo "	FAILED ###PC4### FAILED " >&3
 fi
