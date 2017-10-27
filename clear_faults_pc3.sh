@@ -17,7 +17,7 @@ ACE[4]="1245 635"
 
 # Activate the Data acquisition window.
 wid=`xdotool search --name "acquisition"`
-xdotool windowactivate $wid; sleep 0.2
+xdotool windowactivate $wid; sleep $delay
 
 # Click Clear Faults button
 xdotool mousemove --sync 1230 660 click 1; sleep 7
@@ -32,7 +32,7 @@ xdotool mouseup 1; sleep $delay
 for i in `seq 1 3`; do 
 	color=`grabc & xdotool mousemove --sync ${FCM[$i]} click 1`
 	if [ "$color" = "#00ff00" ] ; then
-		sleep $delay
+		sleep 0
 	else
 		echo "	FAILED ###PC3### FAILED" >&3; exit
 	fi
@@ -42,7 +42,7 @@ done
 for i in `seq 1 4`; do 
 	color=`grabc & xdotool mousemove --sync ${ACE[$i]} click 1`
 	if [ "$color" = "#00ff00" ] ; then
-		sleep $delay
+		sleep 0
 	else
 		echo "	FAILED ###PC3### FAILED" >&3; exit
 	fi
@@ -55,7 +55,7 @@ xdotool mousemove --sync 110 85 click 1; sleep $delay
 for i in `seq 1 3`; do 
 	color=`grabc & xdotool mousemove --sync ${FCM[$i]} click 1`
 	if [ "$color" = "#00ff00" ] ; then
-		sleep $delay
+		sleep 0
 	else
 		echo "	FAILED ###PC3### FAILED" >&3; exit
 	fi
@@ -69,4 +69,4 @@ xdotool mousedown 1; sleep $delay
 xdotool mousemove --sync 100 40; sleep $delay
 xdotool mouseup 1; sleep $delay
 
-echo "		PC #3: PASS" >&3; sleep $delay
+echo "		PC #3: PASS" >&3
