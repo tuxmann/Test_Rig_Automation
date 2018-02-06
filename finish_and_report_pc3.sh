@@ -22,20 +22,32 @@ xdotool windowactivate $wid mousemove --sync --window $wid 0 0; sleep $delay
 
 # Click Stop Test button
 xdotool mousemove_relative --sync 1175 655 click 1; sleep $delay
-
+sleep $delay
 # Click Stop Sim button
 xdotool mousemove_relative --sync 0 -100 click 1; sleep $delay
-
-
-# Move window to the right so we can switch tabs later
+sleep $delay
+# Move window to the right
+move_wndw_right(){
 xdotool mousemove --sync 100 40
 xdotool mousedown 1; sleep $delay
 xdotool mousemove --sync 400 40; sleep $delay
 xdotool mouseup 1; sleep $delay
+}
+
+# Move window to the left
+move_wndw_left(){
+xdotool mousemove --sync 400 40
+xdotool mousedown 1; sleep $delay
+xdotool mousemove --sync 100 40; sleep $delay
+xdotool mouseup 1; sleep $delay
+}
+
+# Move window to the right so we can switch tabs later
+move_wndw_right
 
 # Check if status boxes are green #00ff00
 for i in `seq 1 3`; do 
-	color=`grabc & xdotool mousemove --sync ${FCM[$i]} click 1`
+	color=`grabc & sleep 0.2 && xdotool mousemove --sync ${FCM[$i]} click 1`
 	if [ "$color" = "#00ff00" ] ; then
 		sleep 0
 	else
@@ -67,17 +79,14 @@ for i in `seq 1 3`; do
 	sleep $delay
 done   
 
-# Switch to first tab & move window to the left
+# Switch to first tab 
 xdotool mousemove --sync 40 85 click 1; sleep $delay
-xdotool mousemove --sync 400 40
-xdotool mousedown 1; sleep $delay
-xdotool mousemove --sync 100 40; sleep $delay
-xdotool mouseup 1; sleep $delay
+move_wndw_left
 
 if [ "$fail" = 0 ] ; then
-	echo "		PC #3: PASS" >&3
+	echo -e "		\e[102mPC #3: PASS\e[0m" >&3
 else
-	echo "	FAILED ###PC3### FAILED" >&3
+	echo -e "	\e[41mFAILED ###PC3### FAILED\e[0m" >&3
 fi
 
 
@@ -100,4 +109,20 @@ done
 xdotool key "Return"; sleep $delay
 
 # Click Process button
-xdotool mousemove_relative --sync -- -260 325 click 1
+xdotool mousemove_relative --sync -- -295 325 click 1; sleep 3
+
+# Check to see if the program is finished processing.
+button_old=`grabc & xdotool mousemove_relative --sync 354 -185 click 1`
+button_new=$button_old
+xdotool click 1; sleep $delay
+until [ "$button_old" != "$button_new" ]; do
+	button_new=`grabc & sleep 0.1 && xdotool click 1`; sleep 1
+done
+
+# Open file browser and go to most recent report
+nautilus /home/data; sleep 2
+xdotool key "Down"; xdotool key "Down"; xdotool key "Down"; sleep 1
+xdotool key "Return"; sleep 1
+xdotool keydown "ctrl"; xdotool key "End"; xdotool keyup "ctrl"
+
+echo "	PC #3 QRPT file created"  >&3
