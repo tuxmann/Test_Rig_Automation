@@ -21,13 +21,13 @@ xdotool mousemove_relative --sync 1340 170 click 1; sleep 7
 
 # Check if the faults are cleared
 for i in `seq 1 2`; do 
-	color=`grabc & xdotool mousemove_relative --sync -- ${BOX[$i]} click 1`
+	color=`grabc & sleep 0.5 && xdotool mousemove_relative --sync -- ${BOX[$i]} click 1`
 	if [ "$color" = "#00ff00" ] ; then
 		sleep 0
 	else
-		echo "	FAILED ###PC5### FAILED" >&3; exit
+		echo -e "	\e[41mFAILED ###PC5### FAILED\e[0m" >&3; exit
 	fi
 	sleep $delay
 done   
 
-echo "		PC #5: PASS" >&3
+echo -e "		\e[102mPC #5: PASS\e[0m" >&3
