@@ -14,10 +14,10 @@ xdotool windowactivate $wid mousemove --sync --window $wid 0 0; sleep $delay
 xdotool mousemove_relative --sync 950 470 click 1; sleep 7
 
 # Check if the faults are cleared
-color=`grabc & xdotool mousemove_relative --sync -- -300 -420 click 1`
+color=`grabc & sleep 0.5 && xdotool mousemove_relative --sync -- -300 -420 click 1`
 
 if [ "$color" = "#00ff00" ] ; then
-	echo "		PC #4: PASS" >&3
+	echo -e "		\e[102mPC #4: PASS\e[0m" >&3
 else
-	echo "	FAILED ###PC4### FAILED " >&3
+	echo -e "	\e[41mFAILED ###PC4### FAILED\e[0m " >&3
 fi
