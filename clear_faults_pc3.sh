@@ -20,31 +20,46 @@ wid=`xdotool search --name "acquisition"`
 xdotool windowactivate $wid; sleep $delay
 
 # Click Clear Faults button
-xdotool mousemove --sync 1230 660 click 1; sleep 7
+xdotool mousemove --sync 1250 655 click 1; sleep 7
 
-# Move window to the right so we can switch tabs later
+# Move window to the right
+move_wndw_right(){
 xdotool mousemove --sync 100 40
 xdotool mousedown 1; sleep $delay
 xdotool mousemove --sync 400 40; sleep $delay
 xdotool mouseup 1; sleep $delay
+}
+
+# Move window to the left
+move_wndw_left(){
+xdotool mousemove --sync 400 40
+xdotool mousedown 1; sleep $delay
+xdotool mousemove --sync 100 40; sleep $delay
+xdotool mouseup 1; sleep $delay
+}
+
+# Move window to the right so we can switch tabs later
+move_wndw_right
 
 # Check if status boxes are green #00ff00
 for i in `seq 1 3`; do 
-	color=`grabc & xdotool mousemove --sync ${FCM[$i]} click 1`
+	color=`grabc & sleep 0.2 && xdotool mousemove --sync ${FCM[$i]} click 1`
 	if [ "$color" = "#00ff00" ] ; then
 		sleep 0
 	else
-		echo "	FAILED ###PC3### FAILED" >&3; exit
+		echo -e "	\e[41mFAILED ###PC3### FAILED\e[0m" >&3
+		move_wndw_left; exit
 	fi
 	sleep $delay
-done   
+done
 
 for i in `seq 1 4`; do 
 	color=`grabc & xdotool mousemove --sync ${ACE[$i]} click 1`
 	if [ "$color" = "#00ff00" ] ; then
 		sleep 0
 	else
-		echo "	FAILED ###PC3### FAILED" >&3; exit
+		echo -e "	\e[41mFAILED ###PC3### FAILED\e[0m" >&3
+		move_wndw_left; exit
 	fi
 	sleep $delay
 done   
@@ -57,16 +72,14 @@ for i in `seq 1 3`; do
 	if [ "$color" = "#00ff00" ] ; then
 		sleep 0
 	else
-		echo "	FAILED ###PC3### FAILED" >&3; exit
+		echo -e "	\e[41mFAILED ###PC3### FAILED\e[0m" >&3
+		xdotool mousemove --sync 40 85 click 1; sleep $delay
+		move_wndw_left; exit
 	fi
 	sleep $delay
 done   
 
-# Switch to first tab & move window to the left
+# Switch to first tab 
 xdotool mousemove --sync 40 85 click 1; sleep $delay
-xdotool mousemove --sync 400 40
-xdotool mousedown 1; sleep $delay
-xdotool mousemove --sync 100 40; sleep $delay
-xdotool mouseup 1; sleep $delay
-
-echo "		PC #3: PASS" >&3
+move_wndw_left
+echo -e "		\e[102mPC #3: PASS\e[0m" >&3
